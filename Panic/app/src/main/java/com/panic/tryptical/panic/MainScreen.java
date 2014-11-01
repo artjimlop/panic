@@ -1,36 +1,57 @@
 package com.panic.tryptical.panic;
 
 import android.app.Activity;
+import android.graphics.Point;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.Display;
+import android.view.ViewPropertyAnimator;
+import android.widget.ImageView;
 
 
 public class MainScreen extends Activity {
+
+    private ImageView mFloor;
+    private ImageView mPacman;
+    private ImageView mGoToLeft;
+    private ImageView mGoToRight;
+    private ViewPropertyAnimator mPacmanAnimator;
+    private static Integer PACMAN_HEIGHT = 100;
+    private static Integer FLOOR_HEIGHT = 184;
+    private Integer mScreenWidth;
+    private Integer mScreenHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
+
+        // Initialize views
+        mFloor = (ImageView) findViewById(R.id.floor);
+        mPacman = (ImageView) findViewById(R.id.pacman);
+        mGoToLeft = (ImageView) findViewById(R.id.goToLeft);
+        mGoToRight = (ImageView) findViewById(R.id.goToRight);
+
+        // Starting
+        getScreenMeasures();
+        startingAnimation();
+
+    }
+
+    private void getScreenMeasures(){
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        mScreenWidth = size.x;
+        mScreenHeight = size.y;
+    }
+
+    private void startingAnimation(){
+
+        mPacmanAnimator = mPacman.animate().y(mScreenHeight-FLOOR_HEIGHT-PACMAN_HEIGHT);
+        mPacmanAnimator.setDuration(1000);
+        mPacmanAnimator.start();
+
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_screen, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
