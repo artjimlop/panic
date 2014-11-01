@@ -9,6 +9,7 @@ import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -40,6 +41,9 @@ public class MainScreen extends Activity {
         mGoToLeft = (ImageView) findViewById(R.id.goToLeft);
         mGoToRight = (ImageView) findViewById(R.id.goToRight);
 
+        //Initialize list
+        ghosts = new ArrayList<ImageView>();
+
         // Starting
         getScreenMeasures();
         startingAnimation();
@@ -66,11 +70,18 @@ public class MainScreen extends Activity {
         mPacmanAnimator.start();
     }
 
+    /*
+        Face the side, move and shot
+     */
     private void pacmanListeners(){
         // TODO: new image to flip left and right
         mGoToLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mLookingAtRight.equals(true)) {
+                    mLookingAtRight = false;
+                    mPacman.setImageResource(R.drawable.pacman_flipped);
+                }
                 mPacmanAnimator.x(mPacman.getX()-5);
                 mPacmanAnimator.setDuration(10);
                 mPacmanAnimator.start();
@@ -81,6 +92,10 @@ public class MainScreen extends Activity {
         mGoToRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mLookingAtRight.equals(false)) {
+                    mLookingAtRight = true;
+                    mPacman.setImageResource(R.drawable.pacman);
+                }
                 mPacmanAnimator.x(mPacman.getX()+5);
                 mPacmanAnimator.setDuration(10);
                 mPacmanAnimator.start();
@@ -135,11 +150,11 @@ public class MainScreen extends Activity {
         Boolean appear = Math.random() < 0.5;
 
         if(appear.equals(true))
-            startInX = mScreenWidth;
+            startInX = mScreenWidth/100;
         else
-            startInX = -mScreenWidth;
+            startInX = 3*(mScreenWidth/4);
         Integer startInY = mScreenHeight - FLOOR_HEIGHT - PACMAN_HEIGHT;
-        layoutParams.setMargins(50,startInY, 0,0);
+        layoutParams.setMargins(startInX,startInY, 0,0);
         // Applying bullet drawable to the ImageView
         imgView.setBackground(getResources().getDrawable(R.drawable.ghost));
         // Applying the size and position to the ImageView
@@ -147,13 +162,15 @@ public class MainScreen extends Activity {
         // Adding to the view
         mRootLayout.addView(imgView);
 
+        ghosts.add(imgView);
+
         animateGhost(imgView, appear);
     }
 
     private void animateGhost(ImageView imageView, Boolean appear){
-        System.out.println(appear);
         ViewPropertyAnimator ghostAnimator = imageView.animate();
-        if(appear.equals(false))
+        System.out.println(appear);
+        if(appear.equals(true))
             ghostAnimator.translationX(mScreenWidth);
         else
             ghostAnimator.translationX(-mScreenWidth);
@@ -161,6 +178,9 @@ public class MainScreen extends Activity {
         ghostAnimator.start();
     }
 
+    private void checkCollisionGhostPacman(ImageView ghost){
+        
+    }
 
 
 }
