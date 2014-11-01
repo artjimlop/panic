@@ -53,6 +53,7 @@ public class MainScreen extends Activity {
         pacmanListeners();
 
         generateGhost();
+
     }
 
     private void getScreenMeasures(){
@@ -169,17 +170,28 @@ public class MainScreen extends Activity {
 
     private void animateGhost(ImageView imageView, Boolean appear){
         ViewPropertyAnimator ghostAnimator = imageView.animate();
-        System.out.println(appear);
         if(appear.equals(true))
             ghostAnimator.translationX(mScreenWidth);
         else
             ghostAnimator.translationX(-mScreenWidth);
         ghostAnimator.setDuration(15000);
         ghostAnimator.start();
+
+        /*while(ghosts.contains(imageView)){
+            checkCollisionGhostPacman(imageView);
+        }*/
     }
 
     private void checkCollisionGhostPacman(ImageView ghost){
-        
+        // Properties of the pacman:
+        int[] img_coordinates = new int[2];
+        ghost.getLocationOnScreen(img_coordinates);
+        // If a user finishes a drag with a square overlapping the black circle it should be “sucked in” to the circle and leave the scene.
+        if(ghost.getX()>= img_coordinates[0] && ghost.getX()<= img_coordinates[0]+mPacman.getWidth()){
+
+            System.out.println("COLISION");
+            //ghosts.remove(ghost);
+        }
     }
 
 
