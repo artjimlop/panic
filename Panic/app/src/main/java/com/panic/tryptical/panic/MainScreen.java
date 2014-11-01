@@ -9,6 +9,8 @@ import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import java.util.List;
+
 
 public class MainScreen extends Activity {
 
@@ -24,6 +26,7 @@ public class MainScreen extends Activity {
     private Integer mScreenWidth;
     private Integer mScreenHeight;
     private Boolean mLookingAtRight;
+    private List<ImageView> ghosts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,8 @@ public class MainScreen extends Activity {
 
         // Listeners to move pacman
         pacmanListeners();
+
+        generateGhost();
     }
 
     private void getScreenMeasures(){
@@ -118,6 +123,42 @@ public class MainScreen extends Activity {
         bulletAnimator.translationX((float)location);
         bulletAnimator.setDuration(2000);
         bulletAnimator.start();
+    }
+
+    private void generateGhost(){
+        final ImageView imgView = new ImageView(this);
+        // Setting its length and width
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(75, 100);
+        // Setting its position
+        Integer startInX;
+
+        Boolean appear = Math.random() < 0.5;
+
+        if(appear.equals(true))
+            startInX = mScreenWidth;
+        else
+            startInX = -mScreenWidth;
+        Integer startInY = mScreenHeight - FLOOR_HEIGHT - PACMAN_HEIGHT;
+        layoutParams.setMargins(50,startInY, 0,0);
+        // Applying bullet drawable to the ImageView
+        imgView.setBackground(getResources().getDrawable(R.drawable.ghost));
+        // Applying the size and position to the ImageView
+        imgView.setLayoutParams(layoutParams);
+        // Adding to the view
+        mRootLayout.addView(imgView);
+
+        animateGhost(imgView, appear);
+    }
+
+    private void animateGhost(ImageView imageView, Boolean appear){
+        System.out.println(appear);
+        ViewPropertyAnimator ghostAnimator = imageView.animate();
+        if(appear.equals(false))
+            ghostAnimator.translationX(mScreenWidth);
+        else
+            ghostAnimator.translationX(-mScreenWidth);
+        ghostAnimator.setDuration(15000);
+        ghostAnimator.start();
     }
 
 
